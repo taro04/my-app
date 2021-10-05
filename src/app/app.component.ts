@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { cosmosclient, rest, proto } from 'cosmos-client';
-import { BehaviorSubject, combineLatest, observable, Observable } from 'rxjs';
+import { BehaviorSubject, of, Observable } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';
 
 @Component({
@@ -14,11 +14,13 @@ export class AppComponent {
   nodeURL = 'http://localhost:1317'
   chainID = "mars"
   address = "cosmos1z9gwnnwxdp6qfvg3hekmlqtvju0npm2u6yttw7" // default_address_(Alice)
+  //alice:cosmos1z9gwnnwxdp6qfvg3hekmlqtvju0npm2u6yttw7
+  //bob  :cosmos1rjh23wvj3uqy7p9acuapcr356rc9dmvfs38yf5
 
   //cosmos-sdk.service
-  sdk$: Observable<cosmosclient.CosmosSDK>;
-  restURL$ = new BehaviorSubject(this.nodeURL);
-  chainID$ = new BehaviorSubject(this.chainID);
+  sdk: cosmosclient.CosmosSDK;
+  //restURL$ = new BehaviorSubject(this.nodeURL);
+  //chainID$ = new BehaviorSubject(this.chainID);
 
   //
   addr$ = new BehaviorSubject(this.address);
@@ -28,33 +30,34 @@ export class AppComponent {
 
   constructor() {
 
-    //sdkのObservable
-    this.sdk$ = combineLatest([this.restURL$, this.chainID$]).pipe(
-      map(([restURL, chainID]) => ( new cosmosclient.CosmosSDK(restURL, chainID)))
-    );
+    //sdk
+    this.sdk = new cosmosclient.CosmosSDK(this.nodeURL, this.chainID)
+    //this.sdk$ = combineLatest([this.restURL$, this.chainID$]).pipe(
+    //  map(([restURL, chainID]) => ( new cosmosclient.CosmosSDK(restURL, chainID)))
+    //);
     //addressのObservable
     this.address$ = this.addr$.pipe(
       map((addr) => cosmosclient.AccAddress.fromString(addr)),
     );
     //sdk+address
-    const combined$ = combineLatest([this.sdk$, this.address$]);
+    //const combined$ = combineLatest([this.sdk$, this.address$]);
+
     //res->でaddressのObservable
-    this.account$ = combined$.pipe(
-      mergeMap(([sdk, address]) =>
+    this.account$ = this.address$.pipe(
+      mergeMap((address) =>
         rest.cosmos.auth
-          .account(sdk, address)
+          .account(this.sdk, address)
           .then((res) => res.data.account && cosmosclient.codec.unpackCosmosAny(res.data.account))
           .catch((_) => {
-            console.log("kokode err")
             console.error(_);
-            return undefined;
+            return of(undefined);
           }),
       ),
     );
     //関数でbalancesのObservable
-    this.balances$ = combined$.pipe(
-      mergeMap(([sdk, address]) =>
-        rest.cosmos.bank.allBalances(sdk, address).then((res) => res.data.balances || []),
+    this.balances$ = this.address$.pipe(
+      mergeMap((address) =>
+        rest.cosmos.bank.allBalances(this.sdk, address).then((res) => res.data.balances || []),
       ),
     );
   }

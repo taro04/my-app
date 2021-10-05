@@ -1,3 +1,4 @@
+
 <p>my-app</p>
 
 <!--
@@ -18,9 +19,9 @@
 
 <ng-container *ngIf="address$ | async as address">
   <h3>address</h3>
-  <dir>
+  <div>
   <span>address : {{ address.toString() }}</span>
-  </dir>
+  </div>
 </ng-container>
 
 <!--
@@ -35,13 +36,15 @@
 <ng-container *ngIf="balances$ | async as balances">
   <h3>balances</h3>
   <ng-container *ngFor="let balance of balances">
-  <dir>
+  <div>
     <span>{{ balance.denom }}</span>
     <span>:</span>
     <span>{{ balance.amount }}</span>
-  </dir>
+  </div>
   </ng-container>
 </ng-container>
+
+
 
 <!--for send
 <input [(ngModel)]="amount">
