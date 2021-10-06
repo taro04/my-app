@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { cosmosclient, rest, proto } from 'cosmos-client';
-import { BehaviorSubject, of, Observable } from 'rxjs';
-import { map, mergeMap,catchError } from 'rxjs/operators';
+import { BehaviorSubject, of, Observable,timer, throwError } from 'rxjs';
+import { map, mergeMap,catchError,switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -19,7 +19,7 @@ export class AppComponent {
   sdk: cosmosclient.CosmosSDK;
   addr$ = new BehaviorSubject(this.address);
   address$: Observable<cosmosclient.AccAddress | undefined>;
-  account$: Observable<proto.cosmos.auth.v1beta1.BaseAccount | unknown | undefined>;
+  //account$: Observable<proto.cosmos.auth.v1beta1.BaseAccount | unknown | undefined>;
   balances$: Observable<proto.cosmos.base.v1beta1.ICoin[] | undefined>;
 
   constructor() {
@@ -29,37 +29,25 @@ export class AppComponent {
     //addressのObservable
     this.address$ = this.addr$.pipe(
       map((addr) => {
-        console.log("input!!")
-        return cosmosclient.AccAddress.fromString(addr)}),
-      catchError((error) => {
-        console.log("catch_no_err");
-        console.error(error);
-        return of(undefined);
-      }),
-
-    );
-    //res->でaddressのObservable取得
-    this.account$ = this.address$.pipe(
-      mergeMap((address) => {
-        if (address === undefined){
-          console.log("account if de err daze");
-          throw new Error("account if throw de err daze");
+        //cosmosclient.config.setBech32Prefix(addr)
+        console.log("add$_input!!")
+        try{
+          return cosmosclient.AccAddress.fromString(addr)
+        } catch (error) {
+          console.log("add$_try_catch_no_Error");
+          console.error(error)
+          return undefined
         }
-        return rest.cosmos.auth
-          .account(this.sdk, address!)
-          .then((res) => res.data.account && cosmosclient.codec.unpackCosmosAny(res.data.account))
-          .catch((_) => {
-            console.log("account_err daze");
-            console.error(_);
-            return undefined;
-          })}
-        ),
+      }),
+/*
       catchError((error) => {
-        console.log("account catchErr de daze");
+        console.log("add$_catchError_no_err");
         console.error(error);
         return of(undefined);
       }),
+*/
     );
+
     //関数でbalancesのObservable取得
     this.balances$ = this.address$.pipe(
       mergeMap((address) => {
@@ -68,14 +56,16 @@ export class AppComponent {
           throw new Error("balance if throw de err desuyo");
         }
         return rest.cosmos.bank
-          .allBalances(this.sdk, address!)
+          .allBalances(this.sdk, address)
           .then((res) => res.data.balances || [])
       }),
+/*
       catchError((error) => {
         console.log("balance catchErr de desuyo");
         console.error(error);
         return of(undefined);
       }),
+*/
     );
   }
 
@@ -84,4 +74,52 @@ export class AppComponent {
     console.log("input!")
     this.addr$.next(str)
   }
+
+
+  //挙動確認
+  test_catchError(){
+    //emit immediately, then every 1s
+    const source = timer(0, 1000);
+    //switch to new inner observable when source emits, emit items that are emitted
+    const example = source.pipe(
+      switchMap(() => {
+        return throwError("Error desuyo")
+/*
+        .pipe(
+            catchError(val => of(`I caught on after throwError: ${val}`))
+          )
+*/
+        //return of('test');
+      }),
+      catchError(val => of(`I caught on pipe a: ${val}`))
+    );
+    const subscribe = example.subscribe(
+      (val) => {console.log('on sucess error ' + val);console.log(subscribe);},
+      (c) => console.log('on error ' + c),
+    );
+  }
+
+  /*/check_sum
+  bech32_polymod(values:number):number{
+    const GEN = [0x3b6a57b2, 0x26508e6d, 0x1ea119fa, 0x3d4233dd, 0x2a1462b3]
+    var chk = 1
+    //for v in values:{
+    for (let i = 0; i < values; i++)
+      b = (chk >> 25)
+      chk = (chk & 0x1ffffff) << 5 ^ v
+      for i in range(5){
+        chk ^= GEN[i] if ((b >> i) & 1) else 0
+      }
+    }
+    return chk
+  }
+
+  bech32_hrp_expand(s:number):number{
+    return [ord(x) >> 5 for x in s] + [0] + [ord(x) & 31 for x in s]
+  }
+
+  bech32_verify_checksum(hrp, data):boolean{
+    return this.bech32_polymod(this.bech32_hrp_expand(hrp) + data) == 1
+  }
+  */
 }

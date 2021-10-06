@@ -14,7 +14,7 @@
 -->
 
 <input [(ngModel)]="address">
-<button (click)="changeAddress(address)">cg</button>
+<button (click)="changeAddress(address);test_catchError();">cg</button>
 
 
 <ng-container *ngIf="address$ | async as address">
