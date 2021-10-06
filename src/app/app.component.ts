@@ -28,6 +28,7 @@ export class AppComponent {
     this.accAddress$ = this.address$.pipe(
       map((add) => cosmosclient.AccAddress.fromString(add)),
       catchError((error) => {
+        console.log("accAdress input")
         console.error(error)
         return of(undefined)
       })
@@ -54,6 +55,7 @@ export class AppComponent {
 
   //更新
   changeAddress(str:string):void{
+    console.log("input pb")
     this.address$.next(str)
   }
 }
