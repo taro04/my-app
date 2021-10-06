@@ -26,7 +26,17 @@ export class AppComponent {
     this.sdk = new cosmosclient.CosmosSDK(this.nodeURL, this.chainID)
     //accAddressのObservableを取得、エラーの場合コンソールに出力し、undefinedを返す。
     this.accAddress$ = this.address$.pipe(
-      map((add) => cosmosclient.AccAddress.fromString(add)),
+      map((address) => {
+        console.log("add$_input!!")
+        try {
+          console.log("try ok!!")
+          return cosmosclient.AccAddress.fromString(address)
+        } catch (error) {
+          console.log("add$_try_catch_no_Error");
+          console.error(error)
+          return undefined
+        }
+      }),
       catchError((error) => {
         console.log("accAdress input")
         console.error(error)

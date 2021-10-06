@@ -1,53 +1,14 @@
-
-<p>my-app</p>
-
-<!--
-<input [(ngModel)]="address">
-<button (click)="get_account_info(address).then()">get balance</button>
-
-<div>{{ address }}</div>
-<p>balance</p>
-<ng-container *ngFor='let denom of denoms'>
-  <p>Token : {{denom.denom}}
-    Balance : {{denom.amount}}</p>
-</ng-container>
--->
+<h2>my-app</h2>
 <h3>input address</h3>
 <input [(ngModel)]="address">
 <button (click)="changeAddress(address)">cg</button>
-
-
-<ng-container *ngIf="address$ | async as address">
-  <h3>address</h3>
-  <div>
-  <span>address : {{ address.toString() }}</span>
-  </div>
-</ng-container>
-
-<!--
-<ng-container *ngIf="account$ | async as account">
-  <h3>account</h3>
-  <dir>
-    <span>address : {{ account.toS }}</span>
-  </dir>
-</ng-container>
--->
-
+<h3>address</h3>
+<div>address : {{ address }}</div>
 <ng-container *ngIf="balances$ | async as balances">
   <h3>balances</h3>
-  <ng-container *ngFor="let balance of balances">
-  <div>
-    <span>{{ balance.denom }}</span>
-    <span>:</span>
-    <span>{{ balance.amount }}</span>
-  </div>
-  </ng-container>
+    <ng-container *ngFor="let balance of balances">
+      <div>token: {{ balance.denom }} balance: {{ balance.amount }}</div>
+    </ng-container>
 </ng-container>
 
 
-
-<!--for send
-<input [(ngModel)]="amount">
-<input [(ngModel)]="denom">
-<input [(ngModel)]="toAd">
-<button (click)="tx(toAd, denom, amount ).then()">send</button>-->
