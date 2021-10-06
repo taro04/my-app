@@ -18,9 +18,9 @@ export class AppComponent {
   //cosmos-sdk.service
   sdk: cosmosclient.CosmosSDK;
   addr$ = new BehaviorSubject(this.address);
-  address$: Observable<cosmosclient.AccAddress>;
+  address$: Observable<cosmosclient.AccAddress | undefined>;
   account$: Observable<proto.cosmos.auth.v1beta1.BaseAccount | unknown | undefined>;
-  balances$: Observable<proto.cosmos.base.v1beta1.ICoin[]>;
+  balances$: Observable<proto.cosmos.base.v1beta1.ICoin[] | undefined>;
 
   constructor() {
 
@@ -31,39 +31,51 @@ export class AppComponent {
       map((addr) => {
         console.log("input!!")
         return cosmosclient.AccAddress.fromString(addr)}),
-      /*
       catchError((error) => {
         console.log("catch_no_err");
         console.error(error);
-        return;
+        return of(undefined);
       }),
-      */
+
     );
     //res->でaddressのObservable取得
     this.account$ = this.address$.pipe(
-      mergeMap((address) =>
-        rest.cosmos.auth
-          .account(this.sdk, address)
+      mergeMap((address) => {
+        if (address === undefined){
+          console.log("account if de err daze");
+          throw new Error("account if throw de err daze");
+        }
+        return rest.cosmos.auth
+          .account(this.sdk, address!)
           .then((res) => res.data.account && cosmosclient.codec.unpackCosmosAny(res.data.account))
           .catch((_) => {
-            console.log("account_err");
+            console.log("account_err daze");
             console.error(_);
             return undefined;
-          }),
+          })}
         ),
       catchError((error) => {
-        console.log("catch_no_err");
+        console.log("account catchErr de daze");
         console.error(error);
         return of(undefined);
       }),
     );
     //関数でbalancesのObservable取得
     this.balances$ = this.address$.pipe(
-      mergeMap((address) =>
-        rest.cosmos.bank
-          .allBalances(this.sdk, address)
+      mergeMap((address) => {
+        if (address === undefined){
+          console.log("balance if de err desuyo");
+          throw new Error("balance if throw de err desuyo");
+        }
+        return rest.cosmos.bank
+          .allBalances(this.sdk, address!)
           .then((res) => res.data.balances || [])
-      ),
+      }),
+      catchError((error) => {
+        console.log("balance catchErr de desuyo");
+        console.error(error);
+        return of(undefined);
+      }),
     );
   }
 
