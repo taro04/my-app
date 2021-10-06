@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
-import { cosmosclient, rest, proto } from 'cosmos-client';
+import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject, of, Observable } from 'rxjs';
-import { map, mergeMap,catchError } from 'rxjs/operators';
+import { catchError, map, mergeMap } from 'rxjs/operators';
+import { cosmosclient, rest } from 'cosmos-client';
+import { InlineResponse20027Balances } from 'cosmos-client/cjs/openapi/api';
 
 @Component({
   selector: 'app-root',
@@ -13,63 +14,46 @@ export class AppComponent {
   //定義
   nodeURL = 'http://localhost:1317'
   chainID = "mars"
-  address = "cosmos1nl3856m4mjlgmukntldmgdg7t5yc593dmxfsml" // default_address_(Alice)
-
-  //cosmos-sdk.service
   sdk: cosmosclient.CosmosSDK;
-  addr$ = new BehaviorSubject(this.address);
-  address$: Observable<cosmosclient.AccAddress>;
-  account$: Observable<proto.cosmos.auth.v1beta1.BaseAccount | unknown | undefined>;
-  balances$: Observable<proto.cosmos.base.v1beta1.ICoin[]>;
+  address = "cosmos1nl3856m4mjlgmukntldmgdg7t5yc593dmxfsml" // default_address_(Alice)
+  address$ = new BehaviorSubject(this.address);
+  accAddress$: Observable<cosmosclient.AccAddress | undefined>;
+  //account$: Observable<proto.cosmos.auth.v1beta1.BaseAccount | unknown | undefined>;
+  balances$: Observable<InlineResponse20027Balances[] | undefined>;
 
   constructor() {
-
     //sdk
     this.sdk = new cosmosclient.CosmosSDK(this.nodeURL, this.chainID)
-    //addressのObservable
-    this.address$ = this.addr$.pipe(
-      map((addr) => {
-        console.log("input!!")
-        return cosmosclient.AccAddress.fromString(addr)}),
-      /*
+    //accAddressのObservableを取得、エラーの場合コンソールに出力し、undefinedを返す。
+    this.accAddress$ = this.address$.pipe(
+      map((add) => cosmosclient.AccAddress.fromString(add)),
       catchError((error) => {
-        console.log("catch_no_err");
-        console.error(error);
-        return;
-      }),
-      */
-    );
-    //res->でaddressのObservable取得
-    this.account$ = this.address$.pipe(
-      mergeMap((address) =>
-        rest.cosmos.auth
-          .account(this.sdk, address)
-          .then((res) => res.data.account && cosmosclient.codec.unpackCosmosAny(res.data.account))
-          .catch((_) => {
-            console.log("account_err");
-            console.error(_);
-            return undefined;
-          }),
-        ),
-      catchError((error) => {
-        console.log("catch_no_err");
-        console.error(error);
-        return of(undefined);
-      }),
+        console.error(error)
+        return of(undefined)
+      })
     );
     //関数でbalancesのObservable取得
-    this.balances$ = this.address$.pipe(
-      mergeMap((address) =>
-        rest.cosmos.bank
-          .allBalances(this.sdk, address)
-          .then((res) => res.data.balances || [])
-      ),
+    this.balances$ = this.accAddress$.pipe(
+      mergeMap((accAdr) => {
+        console.log(accAdr)
+        if (accAdr === undefined){
+          throw Error('Address is invalid or does not have balances!')
+        }
+        return rest.cosmos.bank
+          .allBalances(this.sdk, accAdr)
+          .then(res => res.data.balances)
+      }),
+      catchError((error) => {
+        console.error(error)
+        return of([])
+      })
     );
   }
 
+  ngOnInit(): void {}
+
   //更新
   changeAddress(str:string):void{
-    console.log("input!")
-    this.addr$.next(str)
+    this.address$.next(str)
   }
 }
