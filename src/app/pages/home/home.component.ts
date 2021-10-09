@@ -14,10 +14,13 @@ export class HomeComponent implements OnInit {
   nodeURL = 'http://localhost:1317';
   chainID = "mars";
   sdk: cosmosclient.CosmosSDK;
-  address = "";
+  address = "cosmos1nl3856m4mjlgmukntldmgdg7t5yc593dmxfsml";
+  //"alice" with address "cosmos1nl3856m4mjlgmukntldmgdg7t5yc593dmxfsml"
+  //"bob" with address "cosmos1fulw7j29ptg7szyn7xdmc2pky6lmy7ytvel3cd"
   address$: BehaviorSubject<string> = new BehaviorSubject(this.address);
   accAddress$: Observable<cosmosclient.AccAddress | undefined>;
   balances$: Observable<InlineResponse20027Balances[] | undefined>;
+  string_org = "orange"
 
   constructor() {
     this.sdk = new cosmosclient.CosmosSDK(this.nodeURL, this.chainID);

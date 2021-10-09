@@ -1,4 +1,6 @@
 import { Component, OnInit, Input  } from '@angular/core';
+import { Observable } from 'rxjs';
+import { InlineResponse20027Balances } from 'cosmos-client/cjs/openapi/api';
 
 @Component({
   selector: 'view-home',
@@ -7,7 +9,8 @@ import { Component, OnInit, Input  } from '@angular/core';
 })
 export class ViewHomeComponent implements OnInit {
 
-  @Input() address?: string; //もらう
+  @Input() address_?: string; //もらう
+  @Input() balances$_?: Observable<InlineResponse20027Balances[] | undefined>;; //もらう
 
   constructor() { }
 

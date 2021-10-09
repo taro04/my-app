@@ -1,8 +1,16 @@
 
-<div class="bg-red-300">
-  <div >view home works!_st</div>
+<div class="bg-red-300 rounded-lg gap-4">
 
-  <div >view home works!_ed</div>
+  <h2 class="text-xl font-black">address</h2>
+  <div>address : {{ address_ }}</div>
+
+  <ng-container *ngIf="balances$_ | async as balances">
+    <h3 class="text-xl font-black">balances</h3>
+      <ng-container *ngFor="let balance of balances">
+        <div>token: {{ balance.denom }} balance: {{ balance.amount }}</div>
+      </ng-container>
+  </ng-container>
+
 </div>
 
 <!--
@@ -11,20 +19,9 @@
     [mosaics$]="mosaics$"
   ></app-home>
 
-
-
-
-
-  <h2>my-app</h2>
 <h3>input address</h3>
 <input [(ngModel)]="address" placeholder="input address" >
 <button (click)="changeAddress(address)">set address</button>
-<h3>address</h3>
-<div>address : {{ address }}</div>
-<ng-container *ngIf="balances$ | async as balances">
-  <h3>balances</h3>
-    <ng-container *ngFor="let balance of balances">
-      <div>token: {{ balance.denom }} balance: {{ balance.amount }}</div>
-    </ng-container>
-</ng-container>
+
+
 -->
