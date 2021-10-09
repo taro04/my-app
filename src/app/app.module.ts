@@ -4,9 +4,17 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { FormsModule } from '@angular/forms';
 
-@NgModule({
+import { ViewHomeComponent } from './views/home/home.component';
+import { HomeComponent } from './pages/home/home.component';
+
+
+
+@NgModule
+({
   declarations: [
     AppComponent,
+    HomeComponent,
+    ViewHomeComponent,
   ],
   imports: [
     BrowserModule,
