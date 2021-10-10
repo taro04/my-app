@@ -1,4 +1,4 @@
-import { Component, OnInit, Input  } from '@angular/core';
+import { Component, EventEmitter, OnInit, Input, Output } from '@angular/core';
 import { Observable } from 'rxjs';
 import { InlineResponse20027Balances } from 'cosmos-client/cjs/openapi/api';
 
@@ -9,12 +9,25 @@ import { InlineResponse20027Balances } from 'cosmos-client/cjs/openapi/api';
 })
 export class ViewHomeComponent implements OnInit {
 
-  @Input() address_?: string; //もらう
+  @Input() address_: string; //もらう
   @Input() balances$_?: Observable<InlineResponse20027Balances[] | undefined>;; //もらう
 
-  constructor() { }
+  @Output() inputAddressEvent: EventEmitter<string> = new EventEmitter<string>()
+
+  constructor() {
+    this.address_ = ""
+    //if (this.address_ === undefined){this.address_}
+  }
 
   ngOnInit(): void {
+  }
+
+  //onSelectedTxTypeChanged(inputAddress: string): void {
+  //  this.inputAddressEvent.emit(inputAddress)
+  //}
+
+  onClick(inputAddress: string): void {
+    this.inputAddressEvent.emit(inputAddress);
   }
 
 }

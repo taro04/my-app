@@ -1,8 +1,11 @@
 
 <div class="bg-red-300 rounded-lg gap-4">
 
-  <h2 class="text-xl font-black">address</h2>
-  <div>address : {{ address_ }}</div>
+  <input class="" [(ngModel)]="address_" placeholder="input address" />
+  <input class="bg-red-500 hover:bg-red-700" type="button" value="SET" (click)="onClick(address_)"  required/>
+
+  <div class="text-xl font-black">address</div>
+  <div>address(from parent) : {{ address_ }}</div>
 
   <ng-container *ngIf="balances$_ | async as balances">
     <h3 class="text-xl font-black">balances</h3>

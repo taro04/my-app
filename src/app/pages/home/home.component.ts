@@ -14,17 +14,22 @@ export class HomeComponent implements OnInit {
   nodeURL = 'http://localhost:1317';
   chainID = "mars";
   sdk: cosmosclient.CosmosSDK;
-  address = "cosmos1nl3856m4mjlgmukntldmgdg7t5yc593dmxfsml";
-  //"alice" with address "cosmos1nl3856m4mjlgmukntldmgdg7t5yc593dmxfsml"
-  //"bob" with address "cosmos1fulw7j29ptg7szyn7xdmc2pky6lmy7ytvel3cd"
-  address$: BehaviorSubject<string> = new BehaviorSubject(this.address);
+  //address = "";
+  //"alice" with address "cosmos164pmswcyra95d2vfag9elgew9qmvnkwfuj7z0s"
+  //"bob" with address "cosmos134y0u7wyxyt467jyx6swacgrg8ynyzjqshdd64"
+  //"someone1" : cosmos1nl3856m4mjlgmukntldmgdg7t5yc593dmxfsml"
+  //"someone2" : cosmos1fulw7j29ptg7szyn7xdmc2pky6lmy7ytvel3cd"
+  //"someone3" : cosmos1qqva4829ujj4vrl9nxk6sc7nv8mn08zrjj3k5e
+
+  address$: BehaviorSubject<string> = new BehaviorSubject("");
+  destAddress$: BehaviorSubject<string> = new BehaviorSubject("");
+
   accAddress$: Observable<cosmosclient.AccAddress | undefined>;
   balances$: Observable<InlineResponse20027Balances[] | undefined>;
-  string_org = "orange"
 
   constructor() {
     this.sdk = new cosmosclient.CosmosSDK(this.nodeURL, this.chainID);
-    this.address$ = new BehaviorSubject(this.address);
+    //this.address$ = new BehaviorSubject(this.address);
     //addressからaccAddressを取得
     this.accAddress$ = this.address$.pipe(
       map((address) => {
@@ -57,9 +62,12 @@ export class HomeComponent implements OnInit {
     )
   }
 
-  //addressを更新
-  changeAddress(address: string): void {
-    this.address$.next(address);
+  onReceiveEventDestAddress(destAdr_: string) {
+    this.destAddress$.next(destAdr_);
+  }
+
+  onReceiveEventFromChild(address_: string) {
+    this.address$.next(address_);
   }
 
   ngOnInit(): void {
