@@ -1,0 +1,21 @@
+<div class="bg-red-200">
+<p>home works!</p>
+
+<view-home
+  [balances$_]="balances$"
+  (inputAddressEvent)="onReceiveEventFromChild($event)"
+
+></view-home>
+
+
+<!--<app-account
+  (inputAddressEvent)="onReceiveEventFromChild($event)"
+  (destAddressEvent)="onReceiveEventDestAddress($event)"
+></app-account>-->
+<app-account
+ (destAddressEvent)="onReceiveEventDestAddress($event)"
+></app-account>
+
+<p>home works!</p>
+<ng-container *ngIf="destAddress$ | async as destAddress">{{destAddress}}</ng-container>
+</div>

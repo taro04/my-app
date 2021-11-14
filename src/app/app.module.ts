@@ -1,25 +1,27 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-
 import { FormsModule } from '@angular/forms';
 
-import { MatCardModule } from '@angular/material/card';
-import { HttpClientModule } from '@angular/common/http';
+import { ViewHomeComponent } from './views/home/home.component';
+import { HomeComponent } from './pages/home/home.component';
+import { AccountComponent } from './pages/account/account.component';
 
 
-@NgModule({
+
+@NgModule
+({
   declarations: [
     AppComponent,
+    HomeComponent,
+    ViewHomeComponent,
+    AccountComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    MatCardModule,
-    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

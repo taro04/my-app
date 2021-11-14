@@ -1,0 +1,14 @@
+<div class="bg-yellow-200">
+
+  <div class="text-xl font-black">account</div>
+  <div>address(from(Alice)) : {{fromAddress}}</div>
+
+  <div class="flex-1">
+    <span>input addressSSSS</span>
+    <input [(ngModel)]="destAddress_" placeholder="input send address" >
+    <button class="bg-yellow-300 hover:bg-yellow-400" (click)="onDestAdrClick(destAddress_)">set address</button>
+  </div>
+
+
+
+</div>

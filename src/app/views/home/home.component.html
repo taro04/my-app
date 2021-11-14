@@ -1,0 +1,30 @@
+
+<div class="bg-red-300 rounded-lg gap-4">
+
+  <input class="" [(ngModel)]="address_" placeholder="input address" />
+  <input class="bg-red-500 hover:bg-red-700" type="button" value="SET" (click)="onClick(address_)"  required/>
+
+  <div class="text-xl font-black">address</div>
+  <div>address(from parent) : {{ address_ }}</div>
+
+  <ng-container *ngIf="balances$_ | async as balances">
+    <h3 class="text-xl font-black">balances</h3>
+      <ng-container *ngFor="let balance of balances">
+        <div>token: {{ balance.denom }} balance: {{ balance.amount }}</div>
+      </ng-container>
+  </ng-container>
+
+</div>
+
+<!--
+  <app-home
+    [account$]="account$"
+    [mosaics$]="mosaics$"
+  ></app-home>
+
+<h3>input address</h3>
+<input [(ngModel)]="address" placeholder="input address" >
+<button (click)="changeAddress(address)">set address</button>
+
+
+-->

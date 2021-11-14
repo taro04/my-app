@@ -1,17 +1,4 @@
-<p>my-app</p>
-
-<input [(ngModel)]="address">
-<button (click)="get_account_info(address).then()">get balance</button>
-
-<div>{{ address }}</div>
-<p>balance</p>
-<ng-container *ngFor='let denom of denoms'>
-  <p>Token : {{denom.denom}}
-    Balance : {{denom.amount}}</p>
-</ng-container>
-
-<!--for send
-<input [(ngModel)]="amount">
-<input [(ngModel)]="denom">
-<input [(ngModel)]="toAd">
-<button (click)="tx(toAd, denom, amount ).then()">send</button>-->
+<div class="bg-blur-200">
+<p>{{title}}</p>
+<router-outlet></router-outlet>
+</div>
