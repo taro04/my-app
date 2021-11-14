@@ -1,14 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { Breakpoints, BreakpointObserver } from '@angular/cdk/layout';
 
 @Component({
-  selector: 'app-link1',
-  templateUrl: './link1.component.html',
-  styleUrls: ['./link1.component.css']
+  selector: 'app-my-dashboard',
+  templateUrl: './my-dashboard.component.html',
+  styleUrls: ['./my-dashboard.component.css']
 })
-export class Link1Component implements OnInit {
-
+export class MyDashboardComponent {
   /** Based on the screen size, switch from standard to one column per row */
   cards = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
     map(({ matches }) => {
@@ -30,11 +29,5 @@ export class Link1Component implements OnInit {
     })
   );
 
-  constructor(
-    private breakpointObserver: BreakpointObserver,
-    ) {}
-
-  ngOnInit(): void {
-  }
+  constructor(private breakpointObserver: BreakpointObserver) {}
 }
-

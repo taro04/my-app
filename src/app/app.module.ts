@@ -18,8 +18,9 @@ import { MyNavComponent } from './views/my-nav/my-nav.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
+//import { MyDashboardComponent } from './my-dashboard/my-dashboard.component';デフォルト
 
-//import { MyDashboardComponent } from './views/my-dashboard/my-dashboard.component';
+import { MyDashboardComponent } from './views/my-dashboard/my-dashboard.component';
 
 
 
@@ -33,6 +34,7 @@ import { MatListModule } from '@angular/material/list';
     AccountComponent,
 //    MyDashboardComponent,
     MyNavComponent,
+MyDashboardComponent,
   ],
   imports: [
     BrowserModule,
