@@ -1,12 +1,13 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-
+import { Link3Component } from './link3/link3.component';
 
 @NgModule({
-  declarations: [],
+  declarations: [
+    Link3Component
+  ],
   imports: [
-    CommonModule
+    CommonModule,
   ]
   //exports: [AppComponent],
 })
